@@ -1,13 +1,5 @@
 # Reproducible Research: Peer Assessment 1
 
-
-```r
-# Libraries
-library(dplyr)
-# Settings
-setwd("C:/Users/Patricia/Desktop/repres/RepData_PeerAssessment1")
-```
-
 ## Loading and preprocessing the data
 
 **Dataset:** Activity monitoring data [52K]
@@ -50,6 +42,7 @@ values in the dataset.
 
 **1. Total number of steps taken per day**
 
+
 ```r
 stepsxday<-summarize(group_by(data,date),
                      stepsday=sum(steps,na.rm=T))
@@ -58,6 +51,7 @@ stepsxday<-summarize(group_by(data,date),
 **2. Histogram of the total number of steps taken each day**
 
 Function to create the histogram, so it can be called later:
+
 
 ```r
 histStepsDay<-function(x,title) {
@@ -140,6 +134,7 @@ calculations or summaries of the data.
 
 **1. Total number of missing values in the dataset**
 
+
 ```r
 sum(!complete.cases(data))
 ```
@@ -147,10 +142,12 @@ sum(!complete.cases(data))
 ```
 ## [1] 2304
 ```
+
 The total number of missing values in the dataset
-is 2304.
+is **2304**.
 
 **2. Strategy to fill in the missing vlaues**
+
 In order to fill in the missing values, I will
 use the mean value for the 5-minute interval.
 
@@ -168,7 +165,9 @@ for (i in 1:nrow(stepsxint)) {
               data_fill$interval==intval[[1]],1]<-stepsavg[[1]]
 }
 ```
+
 **4. Show the results in a histogram**
+
 
 ```r
 # Number of steps per day considering filled data
@@ -180,6 +179,7 @@ histStepsDay(stepsxday_fill$steps,
 ```
 
 ![](PA1_template_files/figure-html/Histogram-1.png)\
+
 As shown in the histogram the mean and median 
 total number of steps taken per day differ from
 the data without filled in values. 
