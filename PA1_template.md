@@ -1,11 +1,7 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
-```{r Settings}
+
+```r
 # Libraries
 library(dplyr)
 # Settings
@@ -33,7 +29,8 @@ observations in this dataset.
 
 **1. Load the data**
 
-```{r Load data}
+
+```r
 filename<-"activity.csv"
 data<-read.csv(filename,sep=",",stringsAsFactors=FALSE)
 ```
@@ -41,7 +38,8 @@ data<-read.csv(filename,sep=",",stringsAsFactors=FALSE)
 **2. Process the data**
 Process the data so the date column is in R format:
 
-```{r}
+
+```r
 data$date<-as.Date(data$date, format="%Y-%m-%d")
 ```
 
@@ -51,7 +49,8 @@ In this part of the assignment we ignore the missing
 values in the dataset.
 
 **1. Total number of steps taken per day**
-```{r Number of steps per day}
+
+```r
 stepsxday<-summarize(group_by(data,date),
                      stepsday=sum(steps,na.rm=T))
 ```
@@ -59,7 +58,8 @@ stepsxday<-summarize(group_by(data,date),
 **2. Histogram of the total number of steps taken each day**
 
 Function to create the histogram, so it can be called later:
-```{r Histogram plot function}
+
+```r
 histStepsDay<-function(x,title) {
   # Histogram of the total number of steps taken each day
   hist(x,breaks=25,main=title,xlab="Number of steps",col="grey")
@@ -78,9 +78,12 @@ histStepsDay<-function(x,title) {
 
 Create the histogram with computed mean and median:
 
-```{r Hist call}
+
+```r
 histStepsDay(stepsxday$stepsday,title="Steps taken per day")
 ```
+
+![](PA1_template_files/figure-html/Hist call-1.png)\
 
 
 ## What is the average daily activity pattern?
@@ -91,7 +94,8 @@ I have created a time series plot of the 5-minute
 interval (x-axis) and the average number of steps
 taken, averaged across all days (y-axis).
 
-```{r Create the plot}
+
+```r
 # Get the required data for the plot
 stepsxint<-summarize(group_by(data,interval),
                      stepsint=mean(steps,na.rm=T))
@@ -101,13 +105,16 @@ with(stepsxint,plot(interval,stepsint,type="l",col="grey",lwd=3,
                     main="Average daily activity pattern"))
 ```
 
+![](PA1_template_files/figure-html/Create the plot-1.png)\
+
 **2. Show max step 5-min interval**
 
 I comopute and show the 5-minute interval, on 
 average across all the days in the dataset, that
 contains the maximum number of steps:
 
-```{r Compute and show max 5-min int}
+
+```r
 # Compute max step 5-min interval
 maxstep<-max(stepsxint$stepsint)
 interval<-stepsxint[stepsxint$stepsint==maxstep,1]
@@ -122,6 +129,8 @@ legend("topright",cex=0.8,bty="n",text.col="blue",
                     round(maxstep,2),"\n at the 5-min interval",interval))
 ```
 
+![](PA1_template_files/figure-html/Compute and show max 5-min int-1.png)\
+
 ## Imputing missing values
 
 There are a number of days/intervals where there
@@ -130,8 +139,13 @@ missing days may introduce bias into some
 calculations or summaries of the data.
 
 **1. Total number of missing values in the dataset**
-```{r Missing values}
+
+```r
 sum(!complete.cases(data))
+```
+
+```
+## [1] 2304
 ```
 The total number of missing values in the dataset
 is 2304.
@@ -142,7 +156,8 @@ use the mean value for the 5-minute interval.
 
 **3. Fill in the missing values with the selected strategy**
 
-```{r Fill the missing values}
+
+```r
 # Create a copy of the dataset
 data_fill<-data
 # Loop: for each interval, copy the average steps.
@@ -154,7 +169,8 @@ for (i in 1:nrow(stepsxint)) {
 }
 ```
 **4. Show the results in a histogram**
-```{r Histogram}
+
+```r
 # Number of steps per day considering filled data
 stepsxday_fill<-summarize(group_by(data_fill,date),
                           stepsday=sum(steps,na.rm=T))
@@ -162,6 +178,8 @@ stepsxday_fill<-summarize(group_by(data_fill,date),
 histStepsDay(stepsxday_fill$steps,
              title="Steps taken per day with missing values replaced")
 ```
+
+![](PA1_template_files/figure-html/Histogram-1.png)\
 As shown in the histogram the mean and median 
 total number of steps taken per day differ from
 the data without filled in values. 
@@ -178,7 +196,8 @@ I have created a new factor variable "daytype" in the
 dataset with two levels: "weekday" and "weekend" 
 indictating whether a given date is a weekday or a weekend day.
 
-```{r New factor}
+
+```r
 # Function that returns the daytype
 daytypefun=function(x) {
   dayname<-weekdays(x)
@@ -198,7 +217,8 @@ plot of the 5-minute interval (x-axis) and the average
 number of steps taken, averaged across all weeday days
 or weekend days (y-axis).
 
-```{r Panel plot}
+
+```r
 # Get the required data
 daystepsxint<-summarize(group_by(data,interval,daytype),
                         stepsmean=mean(steps,na.rm=T))
@@ -209,3 +229,6 @@ with(daystepsxint,xyplot(stepsmean~interval|daytype,
                          type="l",main="Time series depending on day type",
                          ylab="Average number of steps",
                          xlab="5-min interval",layout=c(1,2)))
+```
+
+![](PA1_template_files/figure-html/Panel plot-1.png)\
