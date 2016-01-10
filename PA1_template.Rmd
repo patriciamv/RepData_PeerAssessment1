@@ -20,8 +20,10 @@ The variables included in this dataset are:
 
   **steps:** Number of steps taking in a 5-minute 
   interval (missing values are coded as NA)
+
   **date:** The date on which the measurement was 
   taken in YYYY-MM-DD format
+
   **interval:** Identifier for the 5-minute 
   interval in which measurement was taken
 
@@ -29,14 +31,14 @@ The dataset is stored in a comma-separated-value
 (CSV) file and there are a total of 17,568 
 observations in this dataset.
 
-# 1. Load the data
+**1. Load the data**
 
 ```{r Load data}
 filename<-"activity.csv"
 data<-read.csv(filename,sep=",",stringsAsFactors=FALSE)
 ```
 
-# 2. Process the data
+**2. Process the data**
 Process the data so the date column is in R format:
 
 ```{r}
@@ -48,13 +50,13 @@ data$date<-as.Date(data$date, format="%Y-%m-%d")
 In this part of the assignment we ignore the missing
 values in the dataset.
 
-# 1. Total number of steps taken per day
+**1. Total number of steps taken per day**
 ```{r Number of steps per day}
 stepsxday<-summarize(group_by(data,date),
                      stepsday=sum(steps,na.rm=T))
 ```
 
-# 2. Histogram of the total number of steps taken each day
+**2. Histogram of the total number of steps taken each day**
 
 Function to create the histogram, so it can be called later:
 ```{r Histogram plot function}
@@ -72,8 +74,7 @@ histStepsDay<-function(x,title) {
 }
 ```
 
-# 3. Calculate and report the mean and median
-# of the total number of steps
+**3. Calculate and report the mean and median of the total number of steps**
 
 Create the histogram with computed mean and median:
 
@@ -84,7 +85,7 @@ histStepsDay(stepsxday$stepsday,title="Steps taken per day")
 
 ## What is the average daily activity pattern?
 
-# 1. Adjust data to obtain average steps per time interval
+**1. Adjust data to obtain average steps per time interval**
 
 I have created a time series plot of the 5-minute 
 interval (x-axis) and the average number of steps
@@ -100,7 +101,7 @@ with(stepsxint,plot(interval,stepsint,type="l",col="grey",lwd=3,
                     main="Average daily activity pattern"))
 ```
 
-# 2. Show max step 5-min interval
+**2. Show max step 5-min interval**
 
 I comopute and show the 5-minute interval, on 
 average across all the days in the dataset, that
@@ -124,18 +125,18 @@ are missing values (coded as NA). The presence of
 missing days may introduce bias into some
 calculations or summaries of the data.
 
-# 1. Total number of missing values in the dataset
+**1. Total number of missing values in the dataset**
 ```{r Missing values}
 sum(!complete.cases(data))
 ```
 The total number of missing values in the dataset
 is 2304.
 
-# 2. Strategy to fill in the missing vlaues
+**2. Strategy to fill in the missing vlaues**
 In order to fill in the missing values, I will
 use the mean value for the 5-minute interval.
 
-# 3. Fill in the missing values with the selected strategy
+**3. Fill in the missing values with the selected strategy**
 
 ```{r Fill the missing values}
 # Create a copy of the dataset
@@ -148,7 +149,7 @@ for (i in 1:nrow(stepsxint)) {
               data_fill$interval==intval[[1]],1]<-stepsavg[[1]]
 }
 ```
-# 4. Show the results in a histogram
+**4. Show the results in a histogram**
 ```{r Histogram}
 # Number of steps per day considering filled data
 stepsxday_fill<-summarize(group_by(data_fill,date),
@@ -168,7 +169,7 @@ and now both have the same values.
 ## Are there differences in activity patterns 
 ## between weekdays and weekends?
 
-# 1. New factor daytype
+**1. New factor daytype**
 
 I have created a new factor variable "daytype" in the 
 dataset with two levels: "weekday" and "weekend" 
@@ -187,7 +188,7 @@ daytypefun=function(x) {
 data<-mutate(data,daytype=daytypefun(date))
 ```
 
-# 2. Panel plot with time series
+**2. Panel plot with time series**
 
 I have created a panel plot containing a time series
 plot of the 5-minute interval (x-axis) and the average
